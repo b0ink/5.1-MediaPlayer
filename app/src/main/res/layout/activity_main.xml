@@ -8,14 +8,52 @@
     tools:context=".MainActivity"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/editTextYoutubeURL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Youtube URL..."
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/buttonPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextYoutubeURL"
+            android:layout_marginBottom="16dp"
+            android:text="Play"
+            app:cornerRadius="8dp" />
+
+        <Button
+            android:id="@+id/buttonSaveToPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonPlay"
+            android:layout_marginBottom="16dp"
+            android:text="Add to playlist"
+            app:cornerRadius="8dp" />
+
+        <Button
+            android:id="@+id/buttonViewPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonSaveToPlaylist"
+            android:layout_marginBottom="16dp"
+            android:text="My playlist"
+            app:cornerRadius="8dp" />
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
