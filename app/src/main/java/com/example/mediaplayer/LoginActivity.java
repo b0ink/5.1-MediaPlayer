@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     public EditText etUsername;
     public EditText etPassword;
     public Button btnLogin;
+    public Button btnSignup;
 
 
     public DatabaseHelper db;
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.editTextUsername);
         etPassword = findViewById(R.id.editTextPassword);
         btnLogin = findViewById(R.id.buttonLogin);
+        btnSignup = findViewById(R.id.buttonSignup);
 
         Intent intent = getIntent();
         if(intent != null && intent.hasExtra(EXTRA_USERNAME)){
@@ -48,6 +50,12 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Successfully create account, you may now login", Toast.LENGTH_LONG).show();
             }
         }
+
+        btnSignup.setOnClickListener(view -> {
+            Intent signupIntent = new Intent(this, SignupActivity.class);
+            startActivity(signupIntent);
+            finish();
+        });
 
         btnLogin.setOnClickListener(view -> {
             String username = etUsername.getText().toString();
