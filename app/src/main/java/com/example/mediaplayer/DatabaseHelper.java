@@ -142,11 +142,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean addToPlaylist(int userId, String url) {
+
+        String filteredUrl = filterYoutubeUrl(url);
+
+        // Prevent duplicate saves
+        ArrayList<String> urls = this.retrievePlaylist(userId);
+        if(urls.contains(filteredUrl)){
+            return false;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put("userid", userId);
-        contentValues.put("url", filterYoutubeUrl(url));
+        contentValues.put("url", filteredUrl);
 
         long result = db.insert("playlist", null, contentValues);
 
