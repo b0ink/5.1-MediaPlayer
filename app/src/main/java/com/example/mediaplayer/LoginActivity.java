@@ -20,6 +20,9 @@ public class LoginActivity extends AppCompatActivity {
     public EditText etPassword;
     public Button btnLogin;
 
+
+    public DatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        db = DatabaseHelper.getInstance(this);
 
         etUsername = findViewById(R.id.editTextUsername);
         etPassword = findViewById(R.id.editTextPassword);
@@ -43,5 +48,33 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Successfully create account, you may now login", Toast.LENGTH_LONG).show();
             }
         }
+
+        btnLogin.setOnClickListener(view -> {
+            String username = etUsername.getText().toString();
+            String password = etPassword.getText().toString();
+            if(username.isEmpty()){
+                Toast.makeText(this, "Please enter in a username", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if(password.isEmpty()){
+                Toast.makeText(this, "Please enter in a password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            UserData user = db.retrieveUser(username, password);
+
+            if(user == null){
+                Toast.makeText(this, "Invalid username or password", Toast.LENGTH_LONG).show();
+                etPassword.setText("");
+                return;
+            }
+
+            Intent homeIntent = new Intent(this, MainActivity.class);
+            homeIntent.putExtra(MainActivity.EXTRA_USER_ID, user.userId);
+            startActivity(homeIntent);
+            finish();
+
+        });
     }
 }
