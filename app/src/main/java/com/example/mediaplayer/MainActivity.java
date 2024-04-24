@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
 
         int userId = intent.getIntExtra(EXTRA_USER_ID, -1);
