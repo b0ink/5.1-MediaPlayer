@@ -78,6 +78,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return user;
     }
 
+    @SuppressLint("Range")
+    public UserData retrieveUser(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE id=? LIMIT 1", new String[]{String.valueOf(userId)});
+        UserData user = null;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String username = cursor.getString(cursor.getColumnIndex("username"));
+            String fullName = cursor.getString(cursor.getColumnIndex("fullname"));
+
+            user = new UserData(userId, fullName, username);
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        return user;
+    }
+
     public Boolean saveNewUser(String fullName, String username, String passwordRaw) {
         username = username.toLowerCase();
 

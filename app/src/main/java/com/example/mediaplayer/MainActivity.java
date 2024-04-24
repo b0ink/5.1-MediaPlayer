@@ -2,6 +2,9 @@ package com.example.mediaplayer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +15,15 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER_ID = "extra_user_id";
+
+    public DatabaseHelper db;
+
+    public TextView tvFullname;
+    public EditText etYoutubeUrl;
+
+    public Button btnPlay;
+    public Button btnAddToPlaylist;
+    public Button btnViewPlaylist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +42,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+        int userId = intent.getIntExtra(EXTRA_USER_ID, -1);
+
+
+        db = DatabaseHelper.getInstance(this);
+
+        UserData user = db.retrieveUser(userId);
+        tvFullname.setText("Welcome back,\n" + user.fullName + "!");
+
     }
 }
