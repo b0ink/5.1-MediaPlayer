@@ -1,12 +1,20 @@
 package com.example.mediaplayer;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper  {
+import org.mindrot.jbcrypt.BCrypt;
+
+import android.content.ContentValues;
+
+import java.util.ArrayList;
+
+
+public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
 
     private static DatabaseHelper instance;
@@ -45,11 +53,92 @@ public class DatabaseHelper extends SQLiteOpenHelper  {
         onCreate(db);
     }
 
-    // TODO: retrieveUser(string username) -> verify password : return UserData
+    @SuppressLint("Range")
+    public UserData retrieveUser(String username, String passwordRaw) {
+        username = username.toLowerCase();
 
-    // TODO: saveNewUser(UserData user)
+        SQLiteDatabase db = this.getWritableDatabase();
 
-    // TODO: retrievePlaylist(string username)
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username=? LIMIT 1", new String[]{username});
+        UserData user = null;
 
-    // TODO: addToPlaylist
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String fullName = cursor.getString(cursor.getColumnIndex("fullname"));
+            String passwordHashed = cursor.getString(cursor.getColumnIndex("password"));
+
+            if (BCrypt.checkpw(passwordRaw, passwordHashed)) {
+                user = new UserData(id, fullName, username);
+            }
+
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return user;
+    }
+
+    public Boolean saveNewUser(String fullName, String username, String passwordRaw) {
+        username = username.toLowerCase();
+
+        String passwordHashed = BCrypt.hashpw(passwordRaw, BCrypt.gensalt());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("fullname", fullName);
+        contentValues.put("username", username);
+        contentValues.put("password", passwordHashed);
+
+        long result = db.insert("users", null, contentValues);
+
+        if (result != -1) {
+            Log.d("DatabaseHelper", "Added user successfully");
+        }
+
+        return result != -1;
+    }
+
+    @SuppressLint("Range")
+    public ArrayList<String> retrievePlaylist(int userid) {
+        ArrayList<String> urls = new ArrayList<>();
+        String sUserId = String.valueOf(userid);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM playlist WHERE userid=?", new String[]{sUserId});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String url = cursor.getString(cursor.getColumnIndex("url"));
+                urls.add(url);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return urls;
+    }
+
+    public boolean addToPlaylist(int userId, String url) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("userid", userId);
+        contentValues.put("url", filterYoutubeUrl(url));
+
+        long result = db.insert("playlist", null, contentValues);
+
+        if (result != -1) {
+            Log.d("DatabaseHelper", "Added to playlist successfully");
+        }
+
+        return result != -1;
+    }
+
+    public String filterYoutubeUrl(String url) {
+        String filteredUrl = url.replace("https://", "");
+        return filteredUrl;
+    }
+
 }
