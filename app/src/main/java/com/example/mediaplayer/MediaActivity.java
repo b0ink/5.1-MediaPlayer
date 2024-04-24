@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MediaActivity extends AppCompatActivity {
 
+    public static final String EXTRA_YOUTUBE_URL = "extra_youtube_url";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class PlaylistActivity extends AppCompatActivity {
 
+    public static final String EXTRA_USER_ID = "extra_user_id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
